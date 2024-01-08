@@ -39,6 +39,19 @@ mkdir report
 and create scores.json and params.json files inside it
 and write the reports of model performance
 
+FOR PYTHON TESTING FILE INSTALL TOX
+pip install tox
+AND CREATE tox.ini file
+touch tox.ini
+ALSO INSTALL PYTEST
+pip install pytest
+
+ALSO WE CREATE TEST FOLDER
+mkdir test
+CREATE confest.py AND test_config.py
+
+
+
 
 INITALIZE GIT
 git init

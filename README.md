@@ -50,6 +50,21 @@ ALSO WE CREATE TEST FOLDER
 mkdir test
 CREATE confest.py AND test_config.py
 
+FOR CREATING PACKAGE 
+touch setup.py
+
+NOW CREATE WEB APP USING FLASK
+mkdir webapp
+mkdir webapp/static
+mkdir webapp/static/css
+mkdir webapp/static/script
+
+
+mkdir webapp/template
+touch webapp/template/index.html
+touch webapp/template/base.html
+touch webapp/template/404.html
+
 
 
 

@@ -1,9 +1,35 @@
 stages:
   load_data:
-    cmd: python src/load_data.py
+    cmd: python src/load_data.py --config=params.yaml
     deps:
     - src/get_data.py
     - src/load_data.py
     - data_given/winequality.csv
     outs:
     - data/raw/winequality.csv
+
+  split_data:
+    cmd: python src/split_data.py --config=params.yaml
+    deps:
+    - src/split_data.py
+    - data/raw/winequality.csv
+    outs:
+    - data/processed/test_data.csv
+    - data/processed/train_data.csv
+
+  train_and_evaluate:
+    cmd: python src/train_and_evaluate.py --config=params.yaml
+    deps:
+    - data/processed/train_data.csv
+    - data/processed/test_data.csv
+    - src/train_and_evaluate.py
+    params:
+      estimators.ElasticNet.params.alpha
+      estimators.ElasticNet.params.l1_ration
+    metrics:
+    - report/params.json:
+        cache: false
+    - report/scores.json:
+        cache: false
+    outs:
+    - saved_models/model.joblib

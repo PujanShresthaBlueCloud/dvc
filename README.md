@@ -26,6 +26,19 @@ dvc init
 KEEP DATA FILE TO TRACK
 dvc add data_given/winequality.csv
 
+SPLIT DATA INTO test and train 
+CREATE split_data.py file inside src folder
+touch src/split_data.py
+
+CREATE A MODEL TRAIN AND EVALUATE
+CREATE FILE CALLED train_and_evaluate.py inside src folder
+touch src/train_and_evaluate.py
+
+AFTER TRAINING AND EVALUATING WE CREATE A REPORT FOLDER
+mkdir report
+and create scores.json and params.json files inside it
+and write the reports of model performance
+
 
 INITALIZE GIT
 git init

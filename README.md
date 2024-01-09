@@ -65,6 +65,19 @@ touch webapp/template/index.html
 touch webapp/template/base.html
 touch webapp/template/404.html
 
+WE CREATE prediction_service folder and inside it create model folder
+inside predicton_service create file '__init__.py', schema_in.json and prediction.py
+
+
+NOW WE NEED TO CREATE app.py file where we need flask to build app
+pip install flask 
+
+
+FOR CONTINUES INTEGRATION AND CONTINUEUS DEPLOYMET WE CREATE .github FOLDER
+INSIDE .github FOLDER WE WILL CREATE workflows FOLDER
+mkdir -p .github/workflows
+INSIDE workflows FOLDER WE WILL CREATE ci-cd.yaml file
+
 
 
 

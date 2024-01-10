@@ -8,6 +8,7 @@ from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 import joblib
 import json
 from get_data import read_config_file
+import mlflow
 
 def evaluate(actual, predicted):
     """
@@ -39,8 +40,8 @@ def train_and_evaluate(config_path):
     config = read_config_file(config_path)
     train_data_path = config["split_data"]["train_data_path"]
     test_data_path = config["split_data"]["test_data_path"]
-    alpha = config["estimators"]["ElasticNet"]["alpha"]
-    l1_ratio = config["estimators"]["ElasticNet"]["l1_ratio"]
+    alpha = config["estimators"]["ElasticNet"]["params"]["alpha"]
+    l1_ratio = config["estimators"]["ElasticNet"]["params"]["l1_ratio"]
     model_dir = config["model_dir"]
     target = config["base"]["target_col"]
     random_state = config["base"]["random_state"]
@@ -51,50 +52,77 @@ def train_and_evaluate(config_path):
     train_x = train.drop(target, axis=1)
     test_x = test.drop(target, axis=1)
 
-    # Training data in ElasticNet model fitting and predict
-    lr = ElasticNet(
-        alpha=alpha,
-        l1_ratio=l1_ratio,
-        random_state=random_state
-    )
-    lr.fit(train_x, train_y)
-    predicted_qualities = lr.predict(test_x)
+######################## MLFLOW #########################
+    # connect mlflow
+    mlflow_config = config["mlflow_config"]
+    remote_server_uri = mlflow_config["remote_server_uri"]
 
-    # evaluation
-    mae, rmse, r2 = evaluate(test_y, predicted_qualities)
+    mlflow.set_tracking_uri(remote_server_uri)
+    mlflow.set_experiment(mlflow_config["experiment_name"])
+
+    with mlflow.start_run(run_name=mlflow_config["run_name"]) as mlops_run:
 
 
-    print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
-    print("  RMSE: %s" % rmse)
-    print("  MAE: %s" % mae)
-    print("  R2: %s" % r2)
 
-    # Getting the scores and params.json files to write report
-    params_file = config["reports"]["params"]
-    scores_file = config["reports"]["scores"]
+        # Training data in ElasticNet model fitting and predict
+        lr = ElasticNet(
+            alpha=alpha,
+            l1_ratio=l1_ratio,
+            random_state=random_state
+        )
+        lr.fit(train_x, train_y)
+        predicted_qualities = lr.predict(test_x)
 
-    with open(params_file, 'w') as f:
-        params = {
-            "alpha": alpha,
-            "l1_ratio": l1_ratio,
-        }
-        json.dump(params, f, indent=4)
+        # evaluation
+        mae, rmse, r2 = evaluate(test_y, predicted_qualities)
 
-    with open(scores_file, 'w') as f:
-        scores = {
-            "mae": mae,
-            "rmse": rmse,
-            "r2_scores": r2
-        }
-        json.dump(scores, f, indent=4)
+        mlflow.log_param("alpha", alpha)
+        mlflow.log_param("l1_ratio", l1_ratio)
+        mlflow.log_metric("mae", mae)
+        mlflow.log_metric("rmse", rmse)
+        mlflow.log_metric("r2", r2)
 
-    # create a saved_models directory if not already exists
-    os.makedirs(model_dir, exist_ok=True)
-    model_path = os.path.join(model_dir, "model.joblib")
+        tracking_url_type_store = urlparse(mlflow.get_artifact_uri()).scheme
 
-    joblib.dump(lr, model_path)
+        if tracking_url_type_store != "file":
+            mlflow.sklearn.log_model(
+                lr, 
+                "model", 
+                registered_model_name=mlflow_config["registered_model_name"])
+        else:
+            mlflow.sklearn.load_model(lr, "model")
 
+        # #This is the without mlflow 
+        # print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
+        # print("  RMSE: %s" % rmse)
+        # print("  MAE: %s" % mae)
+        # print("  R2: %s" % r2)
+        
+        # # Getting the scores and params.json files to write report
+        # params_file = config["reports"]["params"]
+        # scores_file = config["reports"]["scores"]
 
+        # with open(params_file, 'w') as f:
+        #     params = {
+        #         "alpha": alpha,
+        #         "l1_ratio": l1_ratio,
+        #     }
+        #     json.dump(params, f, indent=4)
+
+        # with open(scores_file, 'w') as f:
+        #     scores = {
+        #         "mae": mae,
+        #         "rmse": rmse,
+        #         "r2_scores": r2
+        #     }
+        #     json.dump(scores, f, indent=4)
+
+        # # create a saved_models directory if not already exists
+        # os.makedirs(model_dir, exist_ok=True)
+        # model_path = os.path.join(model_dir, "model.joblib")
+
+        # joblib.dump(lr, model_path)
+    
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
     args.add_argument("--config", default="params.yaml")

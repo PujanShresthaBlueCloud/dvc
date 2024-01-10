@@ -78,4 +78,20 @@ INSIDE .github FOLDER WE WILL CREATE workflows FOLDER
 mkdir -p .github/workflows
 INSIDE workflows FOLDER WE WILL CREATE ci-cd.yaml file GITHUB WILL AUTOMATICALLY RUN THE BUILD PROCESS AFTER THIS
 
+WE HAVE CREATED NEW BRANCH CHECKOUT mlflow.org for more documentation
+main-mlflow
+
+CREATE log_production_model.py inside src folder
+AND UPDATE dvc.yaml FILE ALSO UPDATA params.yaml FILE WITH THE mlflow-config:
+CREATE artifacts folder in root directory
+
+
+create an artifcats folder
+
+mlflow server command -
+
+mlflow server
+--backend-store-uri sqlite:///mlflow.db
+--default-artifact-root ./artifacts
+--host 0.0.0.0 -p 1234
 

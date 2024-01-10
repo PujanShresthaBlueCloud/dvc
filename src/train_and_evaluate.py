@@ -91,37 +91,6 @@ def train_and_evaluate(config_path):
                 registered_model_name=mlflow_config["registered_model_name"])
         else:
             mlflow.sklearn.load_model(lr, "model")
-
-        # #This is the without mlflow 
-        # print("Elasticnet model (alpha=%f, l1_ratio=%f):" % (alpha, l1_ratio))
-        # print("  RMSE: %s" % rmse)
-        # print("  MAE: %s" % mae)
-        # print("  R2: %s" % r2)
-        
-        # # Getting the scores and params.json files to write report
-        # params_file = config["reports"]["params"]
-        # scores_file = config["reports"]["scores"]
-
-        # with open(params_file, 'w') as f:
-        #     params = {
-        #         "alpha": alpha,
-        #         "l1_ratio": l1_ratio,
-        #     }
-        #     json.dump(params, f, indent=4)
-
-        # with open(scores_file, 'w') as f:
-        #     scores = {
-        #         "mae": mae,
-        #         "rmse": rmse,
-        #         "r2_scores": r2
-        #     }
-        #     json.dump(scores, f, indent=4)
-
-        # # create a saved_models directory if not already exists
-        # os.makedirs(model_dir, exist_ok=True)
-        # model_path = os.path.join(model_dir, "model.joblib")
-
-        # joblib.dump(lr, model_path)
     
 if __name__ == "__main__":
     args = argparse.ArgumentParser()

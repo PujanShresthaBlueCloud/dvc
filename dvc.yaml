@@ -24,8 +24,8 @@ stages:
     - data/processed/test_data.csv
     - src/train_and_evaluate.py
     params:
-      estimators.ElasticNet.params.alpha
-      estimators.ElasticNet.params.l1_ration
+    - estimators.ElasticNet.params.alpha
+    - estimators.ElasticNet.params.l1_ration
     metrics:
     - report/params.json:
         cache: false

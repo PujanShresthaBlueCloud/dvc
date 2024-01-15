@@ -38,4 +38,3 @@ mlflow_config:
   run_name: mlops
   registered_model_name: ElasticNetWineModel
   remote_server_uri: http://0.0.0.0:1234
-  # remote_server_uri: http://localhost:5000

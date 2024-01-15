@@ -17,8 +17,12 @@ split_data:
 estimators:
   ElasticNet:
     params:
-      alpha: 0.88
-      l1_ratio: 0.89
+      # alpha: 0.9
+      # l1_ratio: 0.89
+      # alpha: 0.79
+      # l1_ratio: 0.60
+      alpha: 0.85
+      l1_ratio: 0.75
     
 model_dir: saved_models
 
@@ -30,7 +34,8 @@ webapp_model_dir: prediction_service/model/model.joblib
 
 mlflow_config:
   artifacts_dir: artifacts
-  experiment_name: ElasticNet regression
+  experiment_name: ElasticNet Regression
   run_name: mlops
   registered_model_name: ElasticNetWineModel
   remote_server_uri: http://0.0.0.0:1234
+  # remote_server_uri: http://localhost:5000

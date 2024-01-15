@@ -1,3 +1,6 @@
+file links here as well
+https://medium.com/@shanakachathuranga/end-to-end-machine-learning-pipeline-with-mlops-tools-mlflow-dvc-flask-heroku-evidentlyai-github-c38b5233778c
+
 CREATE CONDA ENVIRONMENT
 conda create -n dvcwine python -y
 
@@ -25,6 +28,9 @@ and initialize
 dvc init
 KEEP DATA FILE TO TRACK
 dvc add data_given/winequality.csv
+
+for dvc.yaml file to work with python we need to give python3 command
+
 
 SPLIT DATA INTO test and train 
 CREATE split_data.py file inside src folder
@@ -88,10 +94,19 @@ CREATE artifacts folder in root directory
 
 create an artifcats folder
 
+for mlflow not file we need to run local server first
+
 mlflow server command -
 
-mlflow server
---backend-store-uri sqlite:///mlflow.db
---default-artifact-root ./artifacts
+mlflow server \
+--backend-store-uri sqlite:///mlflow.db \
+--default-artifact-root ./artifacts \
 --host 0.0.0.0 -p 1234
 
+
+mlflow server \
+--host 0.0.0.0 \
+--port 5000 \
+--backend-store-uri sqlite:///mlflow.db \
+--artifacts-destination file:mlruns/1 \
+--serve-artifacts
